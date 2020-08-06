@@ -11,14 +11,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib.auth import logout
-<<<<<<< HEAD
-
-=======
 # from .forms import UserDeleteForm
 from .models import Profile, Project
 from .forms import RegisterForm, ProfilePicForm, NewProjectForm
 from bootstrap_modal_forms.generic import BSModalCreateView
->>>>>>> parent of 7dd41a6... Revert "Merge branch 'master' of https://github.com/B1Dobbs/Maroon-Task-Management"
 # Create your views here.
 
 
@@ -139,14 +135,11 @@ class ProjectSettings(LoginRequiredMixin,View):
         project = get_object_or_404(Project, pk=project_id)
         context = {'project': project}
         return render(request, self.template_name, context)
-<<<<<<< HEAD
+
 
 def logout_view(request):
     logout(request)
     return redirect('login')
-<<<<<<< HEAD
-    
-=======
 
 # def deleteuser(self, request):
 #     if request.method == 'POST':
@@ -165,7 +158,7 @@ def logout_view(request):
 #     return render(request, 'user/delete-account.html', context)
 
     
-=======
+
     
     def post(self, request, *args, **kwargs):
         project_id = kwargs.get('pk')
@@ -186,5 +179,3 @@ class NewProjectView(BSModalCreateView):
     form_class = NewProjectForm
     success_message = 'Success: Project was created.'
     success_url = reverse_lazy('index')
->>>>>>> 0e1c676a96a40b7042ad93628022939fc58cc3d0
->>>>>>> parent of 7dd41a6... Revert "Merge branch 'master' of https://github.com/B1Dobbs/Maroon-Task-Management"
