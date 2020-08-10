@@ -12,7 +12,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth import logout
 from rest_framework import status
 from .models import Profile, Project, Role, User, Ticket, State, Attribute, Type, AttributeType, RelationshipType
-from .forms import RegisterForm, ProfilePicForm, NewProjectForm, UserDeleteForm, TicketForm, UserUpdate, TicketDetailForm
+from .forms import RegisterForm, ProfilePicForm, NewProjectForm, UserDeleteForm, TicketForm, UserUpdate, TicketDetailForm, AddRole
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.http import HttpResponse, HttpResponseRedirect
 from rest_framework.authtoken.models import Token
@@ -296,17 +296,16 @@ class ProjectSettings(LoginRequiredMixin,View):
 
         #Add User to project
         if response.get('section') == "add_user":
-            project = get_object_or_404(Project, pk=project_id)
-            username = response.get('username')
-            roles = response.get('role')
-            if not User.objects.filter(username = username).exists():
-                raise forms.ValidationError("User does not exist!")            
-            user = User.objects.get(username=username)
-            profile = Profile.objects.get(user=user)
-            if Role.objects.filter(profile=profile, project=project).exists():
-                raise forms.ValidationError("User and Role already exist!")
-            role = Role(profile=profile, role=roles, project=project)
-            role.save()
+            form = AddRole(request.POST)
+            print(form.is_valid())
+            if form.is_valid():
+                # redirect()
+                # project = get_object_or_404(Project, pk=project_id)
+                # username = response.get('username')
+                # roles = response.get('role')
+                # role = Role(profile=profile, role=roles, project=project)
+                # role.save()
+               form.save()
 
         url = reverse('project', kwargs={'pk': kwargs.get('pk')})
         return HttpResponseRedirect(url)

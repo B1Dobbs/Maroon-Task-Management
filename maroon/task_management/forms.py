@@ -59,10 +59,26 @@ class TicketDetailForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'state','type','assignees','description']
 
+class AddRole(forms.ModelForm):
+    username = forms.CharField(required=True)
+    project_pk = forms.CharField(required=True)
+    class Meta:
+        model = Role
+        fields = ['username', 'role','project_pk']
 
-# class AddUserForm(forms.Form):
-#     username = forms.TextInput()
-#     role = forms.SelectMultiple()
-#     class Meta:
-#         model = Project
-#         fields = ['roles']
+    def validate(self, data):
+        print("Validating user")
+        username = self.cleaned_data['username']
+        if not User.objects.filter(username = username).exists():
+            raise forms.ValidationError("User does not exist!") 
+        profile = Profile.objects.get(user=User.objects.get(username=username))
+        project = Project.objects.get(pk=data['project_pk'])
+        if Role.objects.filter(profile=profile, project=project).exists():
+            raise forms.ValidationError("User and Role already exist!")
+
+    def save(self, project, commit=True):
+        profile = Profile.objects.get(user=User.objects.get(username=self.username))
+        role = Role(profile=profile, role=self.role, project=project)
+        if commit:
+            role.save()
+        return role
