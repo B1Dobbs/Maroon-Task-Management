@@ -1,4 +1,3 @@
-
 <div id="add_user" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <form action="" method="POST">
@@ -11,18 +10,19 @@
             <br />
             <input class="modal_input" type="text" name="username" /><br />
             <label class="left_aligned_label">Role</label> <br />
-            <select class="modal_select" id="type_name" name="type_name">
-              <option>Administrator</option>
-              <option>Collaborator</option>
-            </select> <br />
-            
+            <select class="modal_select" id="role" name="role">
+              <option value="is_admin">Administrator</option>
+              <option value="is_normal">Collaborator</option>
             </select> <br />
           </div>
   
           <!-- Footer -->
-          <div class="modal-footer">
+          <div class="add_user">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Add User</button>
+            <button type="submit" class="btn btn-primary">Add User</button>
+            
+            <input id="section" name="section" type="hidden" value="add_user">
+
           </div>
         </div>
       </form>

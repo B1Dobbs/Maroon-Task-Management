@@ -2,52 +2,402 @@
 
 {% block content %}
 
-<form action="{% url 'ticket' ticket.pk %}" method="POST">
+<div class="ticket_contents">
+    <div class="ticket_header" style="border-left-color: {{ ticket.type.color }}">
+        <!-- Close button   -->
+        <a href="{% url 'landing'  project.pk %}"><i class="fa fa-times" aria-hidden="true"></i></a>
+        <h1>ID {{ticket_id}}</h1>
+    </div>
+    <form action="{% url 'ticket' ticket.pk %}" method="POST">
 
         {% csrf_token %}
         <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
             {% for error in form.non_field_errors %}
-                {{ error }}
+            {{ error }}
             {% endfor %}
         </div>
-        {% for field in form %}
-            <div class="form-group">
-            <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-            <div class="{% if field.errors %} invalid{% endif %}">
-                {% for error in field.errors %}
-                <p class="help-block">{{ error }}</p>
-                {% endfor %}
+        
+        <div class="submit_button">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+
+        <div class="form-group">
+            <nav class="navbar">
+                {% for field in form %}
+
+                <div class="{% if field.errors %} invalid{% endif %}">
+                    {% for error in field.errors %}
+                    <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {% if field.label == "Type" %}
+                <div class="form-group" id="bar">
+                    <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <select class="mdb-select md-form modal_input" name="{{field.name}}">
+                        <option value='' disabled>Select Type</option>
+                        {% for type in project.ticket_template.types.all %}
+                        <option value='{{type.pk}}' {% if type.pk == ticket.type.pk %} selected {%endif%}>
+                            {{type.type_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% elif field.label == "State" %}
+                <div class="form-group" id="bar">
+                    <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <select class="mdb-select md-form modal_input" name="{{field.name}}">
+                        <option value='' disabled selected>Select State</option>
+                        {% for state in project.ticket_template.states.all %}
+                        <option value='{{state.pk}}' {% if state.pk == ticket.state.pk %} selected {%endif%}>
+                            {{state.state_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% elif field.label == "Assignees" %}
+                <div class="form-group" id="bar">
+                    <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <select class="selectpicker" name="{{field.name}}" multiple data-live-search="true">
+                        {% for profile in project_profiles %}
+                        <option value='{{profile.pk}}' {% if profile in ticket.assignees.all %} selected {% endif %}>
+                            {{profile.user.username}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% elif field.label == "Title" %}
+                <div class="form-group">
+                    <div class="ticket_title">
+                        <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <input class="modal_input" type="text" name="{{field.name}}" value="{{field.value}}" /> </div>
+                </div>
+                {% else %}
+
+            </nav>
+            <div class="left_side">
+                <div class="desc">
+                    <label class="popup-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <textarea class="form-control" name="{{field.name}}" rows="5">{{field.value}}</textarea>
+                </div>
             </div>
-            {% if field.label == "Type" %}
-            <select class="mdb-select md-form modal_input" name="{{field.name}}">
-                <option value='' disabled selected>Select Type</option>
-                {% for type in project.ticket_template.types.all %}
-                <option value='{{type.pk}}'>{{type.type_name}}</option>
-                {% endfor %}
-            </select>
-            {% elif field.label == "State" %}
-            <select class="mdb-select md-form modal_input" name="{{field.name}}">
-                <option value='' disabled selected>Select State</option>
-                {% for state in project.ticket_template.states.all %}
-                <option value='{{state.pk}}'>{{state.state_name}}</option>
-                {% endfor %}
-            </select>
-            {% elif field.label == "Assignees" %}
-            <select class="selectpicker" name="{{field.name}}" multiple data-live-search="true">
-                {% for profile in project_profiles %}
-                <option value='{{profile.pk}}'>
-                {{profile.user.username}}
-                </option>
-                {% endfor %}
-            </select>
-            {% else %}
-            <input class="modal_input" type="text" name="{{field.name}}" value="{{field.value}}" />
             {% endif %}
+            {% endfor %}
+
+        </div>
+        <div class="right_side">
+            <div name="attributes" class="attribute-block">
+                {% for attr_name, attr_value in ticket.get_attribute_dict.items %}
+                <div class="attribute">
+                    <h1>{{attr_name}}</h1>
+                    <input id="{{attr_name}}" type="text" value="{{attr_value}}" name="{{attr_name}}">
+                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        </div>    
+        </div>
+    </form>
+    <div class="left_side">
+        <div class="comment-block">
+            <div class="comment_title">
+                <h1>Comments</h1>
+            </div>
+            {% for comment in ticket.comments.all %}
+            <div class="comment">
+                <p>({{comment.created_date}}) {{comment.author.username}} said: {{comment.body}}
+                    <button type="button" class="right-button" onclick="deleteComment({{comment.pk}})">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </p>
+            </div>
+            {% endfor %}
+            <div id="comment-form">
+                <textarea id="comment-body" class="form-control" rows="3">{{field.value}}</textarea>
+                <p id="error_comment" style="color: red;"></p>
+            </div>
+            <button id="addComment" class="maroon-button btn btn-primary">Add</button>
+        </div>
+        <div class="">
+            <button id="delete_ticket" class="maroon-button delete-button btn btn-primary">Delete Ticket</button>
+        </div>
+    </div>
+    <div class="right_side">
+        <div class="relationship-block">
+            <div>
+                <h1 class="rlship">Relationships <button type="button" class="right-button fa fa-plus" data-toggle="modal" data-target="#AddLinkModal">Add
+                    Link</button>  </h1>
+            </div>
+            <!-- Modal for add link -->
+            <div class="modal fade" id="AddLinkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="exampleModalLabel"><em>Add Link</em></h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>{% csrf_token %}
+                                <select class="" name="link_type" id="link_type_id">
+                                    <option value='' disabled selected>Select Link</option>
+                                    {% for rel_type in project.ticket_template.relationshipTypes.all %}
+                                    <option value='{{rel_type.name}}'>{{rel_type.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <select class="" id="ticket_id" name="ticket">
+                                    <option value='' disabled selected>Select Ticket</option>
+                                    {% for ticket_1 in project.tickets.all %}
+                                    {% if ticket.pk != ticket_1.pk %}
+                                    <option value='{{ticket_1.id_in_project}}'>{{ticket_1.title}}</option>
+                                    {%endif%}
+                                    {% endfor %}
+                                </select>
 
-        <input type="submit" value="Save" class="btn btn-primary" />
-</form>
+                            </form>
+                            <p id="error_link" style="color: red;"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="saveLink">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% for relationship in ticket.relationships.all %}
+            <div class="relationships">
+                <p>{{relationship.relationship_type.name}}:
+                    <a href="{% url 'ticket' relationship.ticket_2.pk %}">
+                        {{relationship.ticket_2.title}} (ID: {{relationship.ticket_2.id_in_project}})
+                    </a>
+                    <button type="button" class="right-button" onclick="deleteLink({{relationship.pk}})"><i class="fa fa-trash"
+                        aria-hidden="true"></i></button>
+                </p>
+            </div>
+            {% endfor %}
+        </div>
 
-  {% endblock content %} 
+        <div class="file-block">
+            <div>
+                <h1 class="file_title">Files <button type="button" class="right-button fa fa-paperclip" data-toggle="modal"
+                    data-target="#AddFileModal">Add
+                    File</button></h1>
+            </div>
+            <!-- Modal for add file -->
+            <div class="modal fade" id="AddFileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="exampleModalLabel"><em>Upload File</em></h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="POST" enctype="multipart/form-data" id="uploadFileForm">
+                                {% csrf_token %}
+                                <input id="id_file" type="file" class="" name="file">
+                                <p id="err_fileUpload" style="color: red;"></p>
+
+                            </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" id="UploadFile" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="files">
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Date Uploaded</th>
+                    <th></th>
+                </tr>
+                {% for file in ticket.files.all %}
+                <tr>
+                    <td><a href="/{{file.file}}" target="_blank">{{file.name}}</a></td>
+                    <td>{{file.filesize}}</td>
+                    <td>{{file.created_date}}</td>
+                    <td><button type="button" class="right-button" onclick="deleteFile({{file.pk}})"><i class="fa fa-trash"
+                                aria-hidden="true"></i></button></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("#addComment").click((e) => {
+            let project_id = "{{project.pk}}"
+            let ticket_id = "{{ticket.id_in_project}}"
+            let comment = $("#comment-body").val()
+            let token = "{{token}}"
+            if (comment.length === 0) {
+                $("#error_comment").text("Please enter text")
+                return
+            }
+            $("#error_comment").text("")
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}/comment`,
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ body: comment }),
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Comment not added!", errorThrown);
+                }
+            })
+        });
+        $("#UploadFile").click((e) => {
+            e.preventDefault();
+            var form = $('#uploadFileForm')[0];
+            var data = new FormData(form);
+            console.log(data);
+            let project_id = "{{project.pk}}"
+            let ticket_id = "{{ticket.id_in_project}}"
+            let token = "{{token}}"
+            console.log("file", $('#id_file').val())
+            if ($('#id_file').val() == '') {
+                $('#err_fileUpload').text("Please select a file to upload");
+                return;
+            }
+            $('#err_fileUpload').text("");
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: `/api/project/${project_id}/ticket/${ticket_id}/file`,
+                data: data,
+                headers: { "Authorization": `Token ${token}` },
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("File not added!", errorThrown);
+                }
+            })
+        });
+        $("#saveLink").click((e) => {
+            let link_type = $("#link_type_id").children("option:selected").val();
+            let ticket_rel = $("#ticket_id").children("option:selected").val();
+            if (link_type == '' || ticket_rel == '') {
+                $('#error_link').text("Please select link type and ticket");
+                return;
+            }
+            $('#err_link').text("");
+            let project_id = "{{project.pk}}";
+            let token = "{{token}}";
+            let ticket_id = "{{ticket.id_in_project}}";
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}/link`,
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ link_type: link_type, related_ticket_project_pk: ticket_rel }),
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Relationship not added!", errorThrown);
+                }
+            })
+        });
+        $("#delete_ticket").click((e) => {
+            let project_id = "{{project.pk}}";
+            let token = "{{token}}";
+            let ticket_id = "{{ticket.id_in_project}}";
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}`,
+                type: "DELETE",
+                contentType: 'application/json',
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+                    // similar behavior as an HTTP redirect
+                    window.location.replace("{% url 'landing'  project.pk %}");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Ticket not deleted!", errorThrown);
+                }
+            })
+        });
+        const deleteComment = (commentId) => {
+            console.log(commentId)
+            let project_id = "{{project.pk}}";
+            let token = "{{token}}";
+            let ticket_id = "{{ticket.id_in_project}}";
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}/comment/${commentId}`,
+                type: "DELETE",
+                contentType: 'application/json',
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+                    // similar behavior as an HTTP redirect
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Comment not deleted!", errorThrown);
+                }
+            })
+        }
+        const deleteFile = (fileId) => {
+            console.log(fileId)
+            let project_id = "{{project.pk}}";
+            let token = "{{token}}";
+            let ticket_id = "{{ticket.id_in_project}}";
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}/file/${fileId}`,
+                type: "DELETE",
+                contentType: 'application/json',
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+                    // similar behavior as an HTTP redirect
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("File not deleted!", errorThrown);
+                }
+            })
+        }
+        const deleteLink = (linkId) => {
+            console.log(linkId)
+            let project_id = "{{project.pk}}";
+            let token = "{{token}}";
+            let ticket_id = "{{ticket.id_in_project}}";
+            $.ajax({
+                url: `/api/project/${project_id}/ticket/${ticket_id}/link/${linkId}`,
+                type: "DELETE",
+                contentType: 'application/json',
+                headers: { "Authorization": `Token ${token}` },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    //This request will always work, unless the server is down.
+                    // similar behavior as an HTTP redirect
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Link not deleted!", errorThrown);
+                }
+            })
+        }
+
+    </script>
+</div>
+{% endblock content %}

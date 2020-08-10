@@ -1,56 +1,52 @@
 .search_field {
     position: relative;
+    background-color: #f7f6f6;
+    margin: 5px;
+    min-width: 950px;
 }
 
 .search_field input{
     border: none transparent;
     border-radius: 5px;
     outline: none;
-    background-color: #f7f6f6;
     margin-top: 7px;
     width: 85%;  
-    padding-left: 45px;    
+    font-size: 20px;   
 }
 
 .search_field i {
-    position: absolute;
-    left: 5px;
-    top: 14px;
     color: grey;
     padding: 1px;
+    margin: 5px;
+    font-size: 20px;
 }
 
-.dropdown #type, #assignee, #state{    
+.search_title {
+    float: left;
+    width: 30%;
+}
+
+.search_field #type, #assignee, #state, #title{    
     border: none transparent;
     border-radius: 5px;
     outline: none;
     background-color: #f7f6f6;
     font-size: 20px;
     color: grey;
-}
-.dropdown {
-    position: relative;    
-}
-.type {
-    position: absolute;
-    top: -45px;
-    right: 43%;
-}
-
-.assignee {
-    position: absolute;
-    top: -40px;
-    right: 30%;
-}
-
-.state {
-    position: absolute;
-    top: -45px;
-    right: 20%;    
+    display: inline;
 }
 
 .tickets {
-    margin-top: 20px;
+    font-size: 20px;
+}
+
+.ticket-table {
+    width: 100%;
+}
+
+.table-titles {
+    border: 20px solid transparent;
+    color: darkgray;
 }
 
 .tickets p{    
@@ -58,10 +54,30 @@
     border-radius: 20px;
     text-align: center;
     width: auto;
+    /* border: 1px solid #000; */
 }
 
 #new p{
     background-color: red;
+    font-weight: bold;
+    /* text-shadow: 1px 1px 0 #333,
+        -1px -1px 0 #333,
+        1px -1px 0 #333,
+        -1px 1px 0 #333,
+        2px 2px 5px rgba(0,0,0,0.65); */
+}
+
+.ticket-type {
+    color: white;
+    border-radius: 20px;
+    text-align: center;
+    width: auto;
+    font-weight: bold;
+    /* text-shadow: 1px 1px 0 #333,
+        -1px -1px 0 #333,
+        1px -1px 0 #333,
+        -1px 1px 0 #333,
+        2px 2px 5px rgba(0,0,0,0.65); */
 }
 
 #done p{

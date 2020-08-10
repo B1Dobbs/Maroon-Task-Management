@@ -37,7 +37,7 @@
                         <input id="id_image" accept="image/*" type="file" class="" name="image">
                     </p>
                     <p>
-                        ** Just click submit without selecting file to delete profile picture. **
+                        ** Click submit without selecting file to delete profile picture. **
                     </p>
                     <input id="section" name="section" type="hidden" value="upload_pic"> 
                     <div class="modal-footer">
@@ -46,7 +46,7 @@
                 </form>
             </div>
             <!-- <div class="modal-footer">
-          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
             <!--<button type="button" class="btn btn-primary">Save changes</button>
         </div> -->
         </div>
@@ -57,7 +57,7 @@
     <form action="" method="POST">
         {% csrf_token %}
         <h3>Title</h3>
-        <input type="text" id="title" name="title" value="{{project.name}}" /> <!-- Value will be proj name?-->
+        <input type="text" id="title" name="title" value="{{project.name}}" required/> <!-- Value will be proj name?-->
 
         <h3>Description</h3>
         <textarea name="description" cols="24" rows="6">{{project.description}}</textarea>
@@ -67,7 +67,7 @@
     <form action="" method="POST">
         {% csrf_token %}
         <div class="delete_project">
-            {% if role == "is_admin" %}
+            {% if role.role == "is_admin" %}
                 <button class="btn btn-primary" type="submit">Delete Project</button>
             {% endif %}
             <input id="section" name="section" type="hidden" value="delete_project"> 

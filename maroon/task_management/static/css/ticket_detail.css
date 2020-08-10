@@ -1,0 +1,193 @@
+.ticket_header {
+    border-left: 20px solid;    
+    height: 44px;
+}
+.ticket_header i {
+    float: right;
+    margin-right: 10px;
+    font-size: 30px;
+}
+.ticket_header h1 {
+    margin-left: 15px;
+}
+
+.ticket_title {
+    border: none;
+    border-bottom: 3px solid;
+    border-color: #bb285c;    
+    margin-left: 33px;
+}
+
+.ticket_title input{
+    border: none transparent;
+    outline: none;    
+}
+.ticket_title label {
+    display: none;    
+}  
+
+.comment_title, .desc label, .rlship, .file_title{
+    border: none;
+    border-bottom: 3px solid;    
+    border-color: #bb285c;  
+    float: left;  
+    width: 100%;
+}
+
+.desc label {    
+    width: 100%;    
+}
+.comment_title {   
+    margin-bottom: 8px;    
+}
+.comment-block .comment_title {
+    width: 100%;
+}
+.comment-block {
+    position: relative;
+    /* margin-top: 48px; */
+}
+.comment p{
+    font-size: 18px;
+    margin-bottom: 0;    
+}
+/* .rlship {
+    width:40%;
+    margin-bottom: 8px;
+    margin-top: 50px;
+}
+.file_title {   
+    margin-bottom: 8px;
+    border: none;
+    border-bottom: 3px solid;    
+    border-color: #bb285c;    
+} */
+
+.ticket_contents h1 {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+.ticket_contents .form-group {
+    margin-bottom: 0;
+}
+    
+.desc label , .files th, .navbar label{
+    font-weight: 500;
+}
+.files th {
+    color: #666666;
+}
+#comment-body {
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+.navbar {
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 65px;
+    height: auto;
+}
+.navbar .form-group {
+    display: flex;
+}
+.navbar label {
+    color: white;
+    padding-right: 16px;
+}
+
+.navbar #bar {   
+    position: relative;
+    top: 46px;
+    background-color: #bb285c;
+    width: 100%;    
+}
+.navbar .modal_input {
+    padding: 2px;
+    border: none;
+}
+#bar label {
+    margin-left: 13px;
+}
+.right_side {
+    padding-left: 2em;
+    display: grid;
+    margin-left: 38%;
+    position: relative;
+}
+.attribute h1 {
+    margin-top: 6px;
+    margin-bottom: 12px;
+    width: 40%;
+    font-size: 28px;
+    padding: 2px;
+    border-bottom: 3px solid;
+    border-color: #bb285c;
+}
+.left_side div{
+    width: 650px;
+    float: left;   
+    margin-right: 5%;
+}
+
+.file-block .files {
+    margin-top: 7px;
+    font-size: 16px;    
+    table-layout: auto;
+    width: 100%;
+    padding: 5px;
+}
+.desc .modal_input, .comment-block input {
+    background-color: #d6d6d6;
+    border: none transparent;
+    outline: none;   
+}
+.navbar .ticket_title {
+    position: absolute;
+    top: -73px;
+}
+.submit_button {
+    width: fit-content;
+    position: relative;
+    top: 47px;
+    float: right;
+    margin-right: 80px;
+}
+.submit_button input {
+    font-size: smaller;
+}
+#delete_ticket {
+    font-size: smaller;
+}
+
+#addComment, #delete_ticket, .submit_button input{
+    background-color: #bb285c;
+    color:white;
+    border-radius: 6px;
+    border-color: #bb285c;
+}
+.relationship-block .fa-plus:before {
+    color: chartreuse;
+}
+
+.files button {
+    margin-left: 14px;
+    margin-bottom: 10px;
+}
+.relationship-block #trash_button {
+    font-size: large;
+}
+
+.right-button {
+    float: right;
+    background-color: #ffffff;
+    border: none;
+    color: #7a7a7a;
+    font-size: 20px;
+}
+
+.delete-button {
+    margin: 20px;
+    float: right;
+}
+

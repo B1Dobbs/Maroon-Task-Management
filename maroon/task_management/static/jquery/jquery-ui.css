@@ -788,6 +788,10 @@ button.ui-button::-moz-focus-inner {
 	-ms-touch-action: none;
 	touch-action: none;
 }
+.ui-sortable-placeholder {
+	height: 82px !important;
+}
+
 .ui-spinner {
 	position: relative;
 	display: inline-block;

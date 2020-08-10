@@ -206,6 +206,10 @@ class Link(TokenAuthView, TicketObjectView):
         project = get_object_or_404(models.Project, pk=kwargs['pk'])
         ticket_2 = project.tickets.get(id_in_project=body['related_ticket_project_pk'])
 
+        #Check if Relationship already exists
+        if models.Relationship.objects.filter(ticket_2=ticket_2, ticket_1=self.get_ticket(**kwargs)).exists():
+            return Response("The relationship already exists", status=status.HTTP_208_ALREADY_REPORTED)
+
         #Check if relationship eists and create the link
         if project.ticket_template.relationshipTypes.filter(name=body['link_type']).exists():
             relationship_type = project.ticket_template.relationshipTypes.get(name=body['link_type'])
@@ -214,7 +218,7 @@ class Link(TokenAuthView, TicketObjectView):
             link.save()
             serializer = self.serializer_class(link)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        
         #Relationship not valid
         return Response("The relationship is not valid", status=status.HTTP_406_NOT_ACCEPTABLE)
 

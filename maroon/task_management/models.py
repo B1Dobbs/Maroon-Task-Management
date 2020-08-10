@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from colorful.fields import RGBColorField
 from .upload_paths import get_file_upload_path
+import os
 
 #Refence:https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 class Profile(models.Model):
@@ -88,7 +89,13 @@ class State(models.Model):
 
     #color
     color = RGBColorField(default="#0000FF")
+
+    # The position of the state relative to a specific ticket_template's other states
+    position = models.IntegerField(default=-1)
     
+    class Meta:
+        ordering = ["position"]
+
     def __str__(self):
         return self.state_name
 
@@ -172,6 +179,17 @@ class Ticket(models.Model):
     def __str__(self):
         return self.title
 
+    #To display attributes that may not exist for a ticket yet but are 
+    #part of the ticket template
+    def get_attribute_dict(self):
+        attribute_dict = {}
+        for attributeType in self.project.ticket_template.attributeTypes.all():
+            if self.attributes.filter(attribute_type=attributeType).exists():
+                attribute_dict[attributeType.name] = self.attributes.get(attribute_type=attributeType).value
+            else:
+                attribute_dict[attributeType.name] = ""
+        return attribute_dict
+
 class Attribute(models.Model):
     # The parent of the attribute
     attribute_type = models.ForeignKey(AttributeType, on_delete=models.CASCADE, related_name="attributes")
@@ -201,4 +219,7 @@ class File(models.Model):
     file = models.FileField(upload_to=get_file_upload_path)
     # The date that the file was created
     created_date = models.DateTimeField(auto_now_add=True)
+
+    def filesize(self):
+        return os.path.getsize(self.file.path)
 

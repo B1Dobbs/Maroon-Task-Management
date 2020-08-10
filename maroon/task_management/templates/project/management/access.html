@@ -7,45 +7,67 @@
 {% block content %}
 
 <div class="access1">
-    <button class="button button1" data-toggle="modal" data-target="#add_user" style="float: right;" >Add User</button>
-    <h2>Administrators</h2>    
-    <!-- <i class="fa fa-user-circle" id="circ1"></i>   -->
-    {% for role in project.roles.all %}
-    {% if role.role == "is_admin" %} 
+    {% if role.role == "is_admin" %}
+    <button class="button button1" data-toggle="modal" data-target="#add_user" style="float: right;">Add User</button>
+    {% endif %}
+    <h2>Administrators</h2>
+    {% for project_role in admin %}
     <div class="user-row">
-        <i class="fa fa-user-circle" id="circ2"></i> 
+        {% if project_role.profile.avatar %}
+        <img src="/{{project_role.profile.avatar}}" alt="Avatar" class="access-img user-img">
+        {% else %}
+        <img class="access-img user-img" src="https://www.logistec.com/wp-content/uploads/2017/12/placeholder.png">
+        {% endif %}
         <div class="user-info">
-            <p><strong>{{ role.profile.user.username }}</strong></p>
-            {% if role.role == "is_admin" %}
-            <button class="btn" style="float: right;">Demote</button>
+            <p><strong>{{ project_role.profile.user.username }}</strong></p>
+            {% if role.profile.user.username == project_role.profile.user.username and admin.count > 1 %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="demote_user">
+                    <button class="btn btn-primary" type="submit" style="float: right;">Demote</button>
+                    <input  name="username" type="hidden" value="{{project_role.profile.user.username}}">
+                    <input id="section" name="section" type="hidden" value="demote_user">
+                </div>
+            </form>
             {% endif %}
-            <p><strong>{{ role.profile.user.email }}</strong></p>
-            
-            <!-- <p>{{ role.email }}</p>   -->
+            <p><strong>{{ project_role.profile.user.email }}</strong></p>
         </div>
-        <!-- <p id="pending">Pending.....</p> -->
     </div>
-    {% endif %}
     {% endfor %}
-   
-    
-    <div class="collabheader"><h2>Collaborators</h2></div> 
-    {% for role in project.roles.all %}
-    {% if role.role == "is_normal" %} 
-    <div class="collab-row"> 
-        <i class="fa fa-user-circle" id="circ2"></i> 
+
+
+    <div class="collabheader">
+        <h2>Collaborators</h2>
+    </div>
+    {% for project_role in collaborators %}
+    <div class="collab-row">
+        {% if ticket.assignees.all.0.avatar %}
+        <img src="/{{project_role.profile.avatar}}" alt="Avatar" class="access-img user-img">
+        {% else %}
+        <img class="access-img user-img" src="https://www.logistec.com/wp-content/uploads/2017/12/placeholder.png">
+        {% endif %}
+        <!-- <i class="fa fa-user-circle" id="circ2"></i> -->
         <div class="collab-info">
-            <p><strong>{{ role.profile.user.username }}</strong></p>
-            <button class="btn" style="float: right;">Delete</button>
-            <p><strong>{{ role.profile.user.email }}</strong></p>
-            
-            <!-- <p>{{ user.email }}</p>             -->
-        </div>   
-    </div> 
-    {% endif %}
-    {% endfor %}  
-    
-    
+            <p><strong>{{ project_role.profile.user.username }}</strong></p>
+            {% if role.role == "is_admin" %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="delete_user">
+
+                    <button class="btn btn-primary" type="submit" style="float: right;">Delete</button>
+                    <input id="username" name="username" type="hidden" value="{{project_role.profile.user.username}}">
+                    <input id="section" name="section" type="hidden" value="delete_user">
+
+                </div>
+
+            </form>
+            {% endif %}
+            <p><strong>{{ project_role.profile.user.email }}</strong></p>
+        </div>
+    </div>
+    {% endfor %}
+
+
 </div>
 
 

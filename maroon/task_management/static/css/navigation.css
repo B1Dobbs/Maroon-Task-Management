@@ -91,13 +91,17 @@
 }
 
 .project-list img {
-    width: 30px;
-    height: 20px;
+    /* width: 30px;
+    height: 20px; */
     vertical-align: middle;
     float: left;
     margin-right: 20px;
     margin-left: 20px;
     margin-top: 10px;
+    max-width:30px;
+    max-height:30px;
+    width: auto;
+    height: auto; 
     /* margin: 10px; */
 }
 

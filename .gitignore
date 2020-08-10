@@ -5,3 +5,8 @@ env/
 
 settings.json
 *.ps1
+maroon/task_management/migrations/*
+!maroon/task_management/migrations/__init__.py
+maroon/task_management/avatars
+!maroon/task_management/avatars/user.png
+maroon/task_management/project_files/

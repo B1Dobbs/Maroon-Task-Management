@@ -1,51 +1,39 @@
 <div>
   <div class="wrapper">
     <form method="get">
-      {{myFilter.form}}
-      <!-- <div class="search_field">        
-        <input class="search_box" id="searchbox" name="q" method='GET' action="." type="text" value="{{ request.GET.q }}" placeholder="Search...">
-        <i class="fa fa-search"></i>
-        
-        <div class="dropdown">
-        <div class="type">
-            <select name="type" id="type">
-            <option value="">Type</option>
-            <option value="bug">Bug</option>
-            <option value="feature">Feature</option>
-            <option value="document">Document</option>
-            </select>
-        </div>
-        
-        <div class="assignee">
-            <select name="assignees" id="assignee" >
-            <option value="">Assignee(s)</option>
-            <option value="user1">brooke.dobbins</option>
-            <option value="user2">james.hannah</option>
-            <option value="user3">divergentNate</option>
-            </select>
-        </div>
-        <div class="state">
-            <select name="state" id="state">
-            <option value="">State</option>
-            <option value="new">New</option>
-            <option value="inprogress">In Progress</option>
-            <option value="done">Done</option>
-            </select>
-        </div>
-    </div> -->
-      <input type="submit" name="submit" value="Search" />
+      <!-- {{myFilter.form}} -->
 
-  </div>
+      <!-- {{myFilter.form.type}} -->
+      <div class="search_field">       
+        <div class="search_title">
+          <i class="fa fa-search"></i>
+          {{myFilter.form.title}}
+        </div> 
+        <div class="type" id="type">
+            <label class="search-label">Type: </label>
+              {{myFilter.form.type}}
+        </div>
+        <div class="state" id="state">
+            <label class="search-label">State: </label>
+            {{myFilter.form.state}}
+        </div>
+        <div class="assignee" id="assignee">
+            <label class="search-label">Assignees: </label>
+            {{myFilter.form.assignees}}
+        </div>
+          <button type="submit" class="btn">Search</button>
+      </div>
   </form>
+  </div>
 <div class="tickets">
-  <table>
+  <table class="ticket-table">
     <col style="width:5%">
-    <col style="width:15%">
-    <col style="width:20%">
+    <col style="width:10%">
+    <col style="width:25%">
     <col style="width:15%">
     <col style="width:10%">
     <th>
-      <tr>
+      <tr class="table-titles">
         <th>ID</th>
         <th>Type</th>
         <th>Title</th>
@@ -58,42 +46,27 @@
       <tr>
 
         <td>{{ ticket.id }}</td>
-        <td>{{ ticket.type }}</td>
-        <td>{{ ticket.title }}</td>
-        {% if ticket.assignees.all %}
-        <td>{{ ticket.assignees.all.0.user }}</td>
-        {% endif %}
+        <td class="ticket-type" style="padding-right: 50px;">
+          <p style="background-color:{{ ticket.type.color }};">{{ ticket.type }}</p>
+        </td>
+        <td><a href="{% url 'ticket' ticket.id %}">{{ ticket.title }}</a></td>
+        <td>
+          {% if ticket.assignees.all %}
+            {% if ticket.assignees.all.0.avatar %}
+            <img src="/{{ticket.assignees.all.0.avatar}}" alt="Avatar" class="user-img">
+            {% else %}
+            <img class="user-img" src="https://www.logistec.com/wp-content/uploads/2017/12/placeholder.png">
+            {% endif %}
+            {{ ticket.assignees.all.0.user }}
+          {% endif %}
+        </td>
         <td id="new">
-          <p>{{ ticket.state }}</p>
+          <p style="background-color: {{ ticket.state.color }};">{{ ticket.state }}</p>
         </td>
       </tr>
       {% endfor %}
-      <!-- <tr>
-          <td>2</td>
-          <td>Feature</td>
-          <td>Edit Account Wireframe</td>
-          <td>lauren.woods</td>
-          <td id="done"><p>Done</p></td>
-        </tr>     -->
     </tbody>
   </table>
-  <div class="pagination">
-    <span class="step-links">
-      {% if page_obj.has_previous %}
-      <a href="?page=1">&laquo; first</a>
-      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
-
-      {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}">next</a>
-      <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-    </span>
-  </div>
 </div>
 
 </div>
